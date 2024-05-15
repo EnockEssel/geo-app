@@ -4,6 +4,11 @@ pipeline{
     maven 'M2_HOME'
    }
    stages{
+    stage('sonar-scan'){
+        steps{
+            sh ('mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=EnockEssel_geo-app')
+        }
+    }
     stage("maven"){
         steps{ 
         sh 'mvn clean validate compile install test package'
@@ -13,7 +18,7 @@ pipeline{
         steps{
             sh 'curl -uadmin:AP8gcgmmset5jeYChTJYDN6XmDd -T \
             target/bio*.jar \
-            "http://ec2-100-25-156-150.compute-1.amazonaws.com:8081/artifactory/geolocation/geo/bio_${BUILD_ID}.jar"'
+            "http://ec2-100-26-222-200.compute-1.amazonaws.com:8081/artifactory/geolocation/geo/bio_${BUILD_ID}.jar"'
         }
     }
    }
