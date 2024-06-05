@@ -32,6 +32,7 @@ pipeline{
     stage('docker image build'){
         steps{
             sh 'docker build -t logist:v.$(BUILD_ID) .'
+            sh 'docker build -t logist:latest .'
         }
     }
     stage('Image tagging'){
