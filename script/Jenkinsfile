@@ -34,6 +34,12 @@ pipeline{
             sh 'docker build -t logist:v.$(BUILD_ID) .'
         }
     }
+    stage('Image tagging'){
+        steps{
+            sh 'docker tag logist:latest 141216419469.dkr.ecr.us-east-1.amazonaws.com/logist:latest'
+            sh 'docker tag logist:latest 141216419469.dkr.ecr.us-east-1.amazonaws.com/logist:v.$BUILD_ID'
+        }
+    }
    }
 }
  
