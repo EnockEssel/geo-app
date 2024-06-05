@@ -47,6 +47,11 @@ pipeline{
             sh 'docker push 141216419469.dkr.ecr.us-east-1.amazonaws.com/logist:v.$BUILD_ID'
         }
     }
+    stage('docker pull'){
+        steps{
+            sh 'docker pull logist:latest'
+        }
+    }
    }
 }
  
