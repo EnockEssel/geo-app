@@ -1,69 +1,52 @@
-pipeline{
-   agent any 
-   tools{
-    maven 'M2_HOME'
-   }
-   stages{
-    stage('sonar-scan'){
-        steps{
-            withSonarQubeEnv('sonarqube'){
-        sh ('mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=EnockEssel_geo-app')
+pipeline {
+    agent any
+
+    environment {
+        AWS_REGION = 'us-east-1'
+        AWS_ACCOUNT_ID = '141216419469'
+        AWS_CRED_ID = 'aws-credentials-id'  // Jenkins credentials ID for AWS
+        ECR_REPOSITORY = 'logist'
+        IMAGE_TAG = 'latest'
+        CONTAINER_NAME = 'logist6'
+        CONTAINER_PORT = '80'
+        HOST_PORT = '8087'
+    }
+
+    stages {
+        stage('Login to ECR') {
+            steps {
+                script {
+                    withAWS(credentials: "${141216419469}", region: "${us-east-1}") {
+                        sh """
+                        aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 141216419469.dkr.ecr.us-east-1.amazonaws.com
+                        """
+                    }
+                }
+            }
+        }
+
+        stage('Pull Docker Image') {
+            steps {
+                script {
+                    sh "docker pull ${141216419469}.dkr.ecr.${us-east-1}.amazonaws.com/${logist}:${latest}"
+                }
+            }
+        }
+
+        stage('Run Docker Container') {
+            steps {
+                script {
+                    sh """
+                    docker run -d --name ${logist6} -p ${8087}:${80} ${141216419469}.dkr.ecr.${us-east-1}.amazonaws.com/${logist}:${latest}
+                    """
+                }
             }
         }
     }
-    stage("maven"){
-        steps{ 
-        sh 'mvn clean validate compile install test package'
+
+    post {
+        always {
+            cleanWs()
         }
     }
-    stage('upload artifact'){
-        steps{
-            sh 'curl -uAdmin:AP8gcgmmset5jeYChTJYDN6XmDd -T \
-            target/bio*.jar \
-            "http://ec2-52-204-60-206.compute-1.amazonaws.com:8081/artifactory/geolocation/geo/bio_${BUILD_ID}.jar"'
-        }
-    }
-    stage('docker login'){
-        steps{
-            sh 'aws ecr get-login-password --region us-east-1 \
-            | docker login --username AWS --password-stdin 141216419469.dkr.ecr.us-east-1.amazonaws.com'
-        }
-    }
-    stage('docker image build'){
-        steps{
-            sh 'docker build -t logist:v.$(BUILD_ID) .'
-            sh 'docker build -t logist:latest .'
-        }
-    }
-    stage('Image tagging'){
-        steps{
-            sh 'docker tag logist:latest 141216419469.dkr.ecr.us-east-1.amazonaws.com/logist:latest'
-            sh 'docker tag logist:latest 141216419469.dkr.ecr.us-east-1.amazonaws.com/logist:v.$BUILD_ID'
-        }
-    }
-    stage('image push'){
-        steps{
-            sh 'docker push 141216419469.dkr.ecr.us-east-1.amazonaws.com/logist:latest'
-            sh 'docker push 141216419469.dkr.ecr.us-east-1.amazonaws.com/logist:v.$BUILD_ID'
-        }
-    }
-    stage('docker login1'){
-        steps{
-            sh 'aws ecr get-login-password --region us-east-1 \
-            | docker login --username AWS --password-stdin 141216419469.dkr.ecr.us-east-1.amazonaws.com'
-        }
-    }
-    stage('docker pull'){
-        steps{
-            sh 'docker pull 141216419469.dkr.ecr.us-east-1.amazonaws.com/logist:latest'
-        }
-    }
-    stage('docker run'){
-        steps{
-            sh 'docker run -d --name logist5 -p 8086:80 \
-            141216419469.dkr.ecr.us-east-1.amazonaws.com/logist:latest'
-        }
-    }
-   }
 }
- 
