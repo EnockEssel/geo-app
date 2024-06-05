@@ -58,6 +58,12 @@ pipeline{
             sh 'docker pull 141216419469.dkr.ecr.us-east-1.amazonaws.com/logist:latest'
         }
     }
+    stage('docker run'){
+        steps{
+            sh 'docker run -d --name logist2 -p 8085:80 \
+            141216419469.dkr.ecr.us-east-1.amazonaws.com/logist:latest'
+        }
+    }
    }
 }
  
