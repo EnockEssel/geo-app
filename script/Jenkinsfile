@@ -60,7 +60,7 @@ pipeline{
     }
     stage('docker run'){
         steps{
-            sh 'docker run -d --name logist2 -p 8085:80 \
+            sh 'docker run -d --name logist5 -p 8086:80 \
             141216419469.dkr.ecr.us-east-1.amazonaws.com/logist:latest'
         }
     }
