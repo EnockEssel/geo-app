@@ -55,7 +55,7 @@ pipeline{
     }
     stage('docker pull'){
         steps{
-            sh 'docker pull logist:latest'
+            sh 'docker pull 141216419469.dkr.ecr.us-east-1.amazonaws.com/logist:latest'
         }
     }
    }
