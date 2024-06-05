@@ -23,12 +23,6 @@ pipeline{
             "http://ec2-100-26-222-200.compute-1.amazonaws.com:8081/artifactory/geolocation/geo/bio_${BUILD_ID}.jar"'
         }
     }
-    stage('docker login'){
-        steps{
-            sh 'aws ecr get-login-password --region us-east-1 | \
-            docker login --username AWS --password-stdin 141216419469.dkr.ecr.us-east-1.amazonaws.com' 
-        }
-    }
    }
 }
  
