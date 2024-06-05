@@ -41,6 +41,12 @@ pipeline{
             sh 'docker tag logist:latest 141216419469.dkr.ecr.us-east-1.amazonaws.com/logist:v.$BUILD_ID'
         }
     }
+    stage('image push'){
+        steps{
+            sh 'docker push 141216419469.dkr.ecr.us-east-1.amazonaws.com/logist:latest'
+            sh 'docker push 141216419469.dkr.ecr.us-east-1.amazonaws.com/logist:v.$BUILD_ID'
+        }
+    }
    }
 }
  
