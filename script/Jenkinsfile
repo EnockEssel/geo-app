@@ -47,16 +47,5 @@ pipeline{
             sh 'docker push 141216419469.dkr.ecr.us-east-1.amazonaws.com/logist:v.$BUILD_ID'
         }
     }
-    stage('docker login1'){
-        steps{
-            sh 'aws ecr get-login-password --region us-east-1 \
-            | docker login --username AWS --password-stdin 141216419469.dkr.ecr.us-east-1.amazonaws.com'
-        }
-    }
-    stage('docker pull'){
-        steps{
-            sh 'docker pull 141216419469.dkr.ecr.us-east-1.amazonaws.com/logist:latest'
-        }
-    }
     }
    }
